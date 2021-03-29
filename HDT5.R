@@ -106,3 +106,38 @@ testing <- test[,c("LotFrontage","LotArea","GrLivArea","YearBuilt","BsmtUnfSF","
 testing <- na.omit(testing)
 View(testing)
 
+# Agregar la col
+testing$grupo <- ifelse(testing$SalePrice<178000, "3", 
+                        ifelse(testing$SalePrice<301000, "2",
+                               ifelse(testing$SalePrice<756000,"1",NA)))
+
+testing$grupo <- as.factor(testing$grupo)
+testing
+
+predBayes<-predict(modelo, newdata = testing[,1:11])
+predBayes
+
+# Se une la columna
+testing['prediccion'] <- predBayes
+
+# Cantidad de predicciones falladas
+testing[which(testing[,12]!=testing[,13]),]
+count(testing[which(testing[,12]!=testing[,13]),])
+
+# Se elimna la columna extra de prediccion 
+testing[,13]<- NULL
+
+## Determinación de Eficiencia del modelo con Confusion Matrix
+confusionMatrix(predBayes,testing$grupo)
+
+matriz_cor <- cor(datos[,1:11])
+matriz_cor
+corrplot(matriz_cor)
+
+## validacion cruzada
+ct<-trainControl(method = "cv",datos[,1:11],number=10, verboseIter=T)
+modeloCaret<-train(grupo~.,data=datos,method="nb",trControl = ct)
+modeloCaret
+prediccionCaret<-predict(modeloCaret,newdata = testing[,1:11])
+confusionMatrix(prediccionCaret,testing$grupo)
+
