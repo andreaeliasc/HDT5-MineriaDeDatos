@@ -83,3 +83,26 @@ g2<- datos[datos$grupo==2,]
 prop.table(table(g2$SalePrice))*100
 g3<- datos[datos$grupo==3,]
 prop.table(table(g3$SalePrice))*100
+
+# Graficos de cluster
+plotcluster(datos,km$cluster)
+fviz_cluster(km, data = datos,geom = "point", ellipse.type = "norm")
+
+max(g1["SalePrice"])
+min(g1["SalePrice"])
+max(g2["SalePrice"])
+min(g2["SalePrice"])
+max(g3["SalePrice"])
+min(g3["SalePrice"])
+
+datos$grupo <- as.factor(datos$grupo)
+
+##  modelo Naive Bayes 
+modelo<-naiveBayes(grupo~.,data=datos)
+modelo
+
+## Eficiencia del modelo 
+testing <- test[,c("LotFrontage","LotArea","GrLivArea","YearBuilt","BsmtUnfSF","TotalBsmtSF","X1stFlrSF","GarageYrBlt","GarageArea","YearRemodAdd", "SalePrice")]
+testing <- na.omit(testing)
+View(testing)
+
