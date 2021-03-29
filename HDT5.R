@@ -28,3 +28,13 @@ test<- read.csv("test.csv", stringsAsFactors = FALSE)
 train<-train[1:1460,]
 
 glimpse(train[1:10,])
+
+#separacion de datos para training y testing, donde se deja el 70% 
+#para training y el 30% para testing
+porcentaje<-0.7
+datos<-read.csv("train.csv", stringsAsFactors = FALSE)
+set.seed(123)
+
+corte <- sample(nrow(datos),nrow(datos)*porcentaje)
+train<-datos[corte,]
+test<-datos[-corte,]
